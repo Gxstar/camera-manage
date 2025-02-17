@@ -1,0 +1,87 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.eggs/
+dist/
+sdist/
+*.egg-info/
+build/
+wheels/
+pip-log.txt
+pip-delete-this.txt
+*.whl
+docs/_build
+
+# PyInstaller
+**/__pycache__
+**/.DS_Store
+*.spec
+dist/
+build/
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.db
+*.sqlite3
+*.makemigrations
+/media/
+/static/
+staticfiles/
+/staticfiles/
+.DS_Store
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs
+/site/
+
+# Environments
+.venv
+venv/
+env/
+ENV/
+.env
+*.swp
+*.swo
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# VS Code
+.vscode/
+
+# JetBrains IDE
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
