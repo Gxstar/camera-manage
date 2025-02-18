@@ -13,8 +13,5 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    class Config:
-        env_file = ".env"  # 可以从 .env 文件中读取配置
-
 
 settings = Settings()

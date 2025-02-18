@@ -2,5 +2,5 @@ fastapi
 uvicorn
 pymysql
 bcrypt
-ython-jose[cryptography]
+python-jose[cryptography]
 passlib
