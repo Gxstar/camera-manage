@@ -1,36 +1,20 @@
-from pydantic import BaseModel
-from typing import Optional
-from datetime import datetime
+from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.sql import func
 
+Base = declarative_base()
 
-class UserBase(BaseModel):
-    username: str
-    email: str
-    role: str = "user"  # 默认为普通用户
-    token: Optional[str] = None
+class User(Base):
+    __tablename__ = "users"
 
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    username = Column(String(255), unique=True, nullable=False)  # 用户名，非空，唯一
+    email = Column(String(255), unique=True, nullable=False)  # 邮箱，非空，唯一
+    hashed_password = Column(String(255), nullable=False)  # 哈希密码，非空
+    role = Column(String(50), default="user")  # 角色，默认为 "user"
+    token = Column(String(255), nullable=True)  # 令牌，可为空
+    created_at = Column(DateTime(timezone=True), server_default=func.now())  # 创建时间，自动生成
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), server_default=func.now())  # 更新时间，自动更新
 
-class UserCreate(UserBase):
-    password: str
-
-
-class User(UserBase):
-    id: int
-    created_at: datetime
-    updated_at: datetime
-
-    class Config:
-        from_attributes = True
-
-
-class UserUpdate(BaseModel):
-    username: Optional[str] = None
-    email: Optional[str] = None
-    password: Optional[str] = None
-    role: Optional[str] = None
-    token: Optional[str] = None
-
-
-class TokenData(BaseModel):
-    username: str
-    role: str
+    def __repr__(self):
+        return f"<User(username='{self.username}', email='{self.email}', role='{self.role}')>"

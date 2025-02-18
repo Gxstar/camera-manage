@@ -1,40 +1,28 @@
-from pydantic import BaseModel
-from typing import Optional
-from datetime import date, datetime
+from sqlalchemy import Column, Integer, String, Float, Date, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.sql import func
 
+Base = declarative_base()
 
-class CameraBase(BaseModel):
-    brand_id: int
-    model: str
-    format: Optional[str] = None
-    weight: Optional[float] = None
-    mount: Optional[str] = None
-    price: float
-    pixel_resolution: Optional[str] = None
-    release_date: Optional[date] = None
-    image_url: Optional[str] = None
+class Camera(Base):
+    __tablename__ = "cameras"
 
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    brand_id = Column(Integer, ForeignKey("brands.id"), nullable=False)  # 外键，关联到 brands 表
+    model = Column(String(255), nullable=False)  # 型号，非空
+    format = Column(String(255), nullable=True)  # 幅面，可为空
+    weight = Column(Float, nullable=True)  # 重量，可为空
+    mount = Column(String(255), nullable=True)  # 卡口，可为空
+    price = Column(Float, nullable=False)  # 价格，非空
+    pixel_resolution = Column(String(255), nullable=True)  # 像素，可为空
+    release_date = Column(Date, nullable=True)  # 发布日期，可为空
+    image_url = Column(String(255), nullable=True)  # 图片 URL，可为空
+    created_at = Column(DateTime(timezone=True), server_default=func.now())  # 创建时间，自动生成
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), server_default=func.now())  # 更新时间，自动更新
 
-class CameraCreate(CameraBase):
-    pass
+    # 定义与 Brand 模型的关联关系
+    brand = relationship("Brand", backref="cameras")  # backref 允许从 Brand 模型反向查询 Cameras
 
-
-class Camera(CameraBase):
-    id: int
-    created_at: datetime
-    updated_at: datetime
-
-    class Config:
-        from_attributes = True
-
-
-class CameraUpdate(BaseModel):
-    brand_id: Optional[int] = None
-    model: Optional[str] = None
-    format: Optional[str] = None
-    weight: Optional[float] = None
-    mount: Optional[str] = None
-    price: Optional[float] = None
-    pixel_resolution: Optional[str] = None
-    release_date: Optional[date] = None
-    image_url: Optional[str] = None
+    def __repr__(self):
+        return f"<Camera(model='{self.model}', brand_id={self.brand_id})>"

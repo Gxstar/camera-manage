@@ -1,70 +1,32 @@
-import pymysql
+import os
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.exc import SQLAlchemyError
+from typing import Generator
 
-class Database:
-    def __init__(self, host='193.112.82.102', user='camera_lens', password='gx19930804', db='camera_lens'):
-        self.host = host
-        self.user = user
-        self.password = password
-        self.db = db
-        self.conn = None
+# 从环境变量获取数据库配置 (推荐)
+DB_USER = os.environ.get("DB_USER", "camera_lens")
+DB_PASSWORD = os.environ.get("DB_PASSWORD", "gx19930804")
+DB_HOST = os.environ.get("DB_HOST", "193.112.82.102")
+DB_PORT = os.environ.get("DB_PORT", "3306")  # 获取端口，默认为 3306
+DB_NAME = os.environ.get("DB_NAME", "camera_lens")
 
-    def connect(self):
-        if not self.conn:
-            try:
-                self.conn = pymysql.connect(
-                    host=self.host,
-                    user=self.user,
-                    password=self.password,
-                    database=self.db,
-                    cursorclass=pymysql.cursors.DictCursor  # 返回字典格式的数据
-                )
-                print("Database connection established.")
-            except pymysql.MySQLError as e:
-                print(f"Error connecting to database: {e}")
-                raise
-        return self.conn
+# 构建数据库连接字符串
+DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
-    def close(self):
-        if self.conn:
-            self.conn.close()
-            self.conn = None
-            print("Database connection closed.")
+# 创建 SQLAlchemy 引擎
+engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 
-    def execute(self, query, params=None):
-        """Execute a SQL query."""
-        conn = self.connect()
-        try:
-            with conn.cursor() as cursor:
-                cursor.execute(query, params)
-                conn.commit()
-            return True
-        except pymysql.MySQLError as e:
-            print(f"Error executing query: {e}")
-            conn.rollback()
-            return False
+# 创建 SessionLocal 类，用于创建数据库会话
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-    def fetchone(self, query, params=None):
-        """Fetch one result from a SQL query."""
-        conn = self.connect()
-        try:
-            with conn.cursor() as cursor:
-                cursor.execute(query, params)
-                return cursor.fetchone()
-        except pymysql.MySQLError as e:
-            print(f"Error fetching data: {e}")
-            return None
+def get_db() -> Generator[Session, None, None]:
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-    def fetchall(self, query, params=None):
-        """Fetch all results from a SQL query."""
-        conn = self.connect()
-        try:
-            with conn.cursor() as cursor:
-                cursor.execute(query, params)
-                return cursor.fetchall()
-        except pymysql.MySQLError as e:
-            print(f"Error fetching data: {e}")
-            return None
-
-
-# 创建一个全局数据库连接实例
-db = Database()
+# (可选) 创建所有表
+# from .models import Base
+# Base.metadata.create_all(bind=engine)
