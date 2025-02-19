@@ -24,7 +24,7 @@ class Lens(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now(), server_default=func.now())  # 更新时间，自动更新
 
     # 定义与 Brand 模型的关联关系
-    brand = relationship("Brand", backref="lenses")  # backref 允许从 Brand 模型反向查询 Lenses
+    # brand = relationship("Brand", backref="lenses")  # backref 允许从 Brand 模型反向查询 Lenses
 
     def __repr__(self):
         return f"<Lens(model='{self.model}', brand_id={self.brand_id})>"
