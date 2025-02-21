@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from api.cameras import routes as camera_router
 from api.lenses import routes as lens_router
 from api.brands import routes as brand_router
@@ -8,6 +9,15 @@ app = FastAPI(
     title="Camera Lens Catalog API",
     description="An API for managing camera and lens information.",
     version="0.1.0",
+)
+
+# 允许所有来源的请求
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # 注册路由
