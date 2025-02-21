@@ -141,3 +141,26 @@ async def delete_user(user_id: int, db: Session = Depends(get_db)):
     db.delete(db_user)
     db.commit()
     return {"message": "User deleted successfully"}
+
+# 新增注册 API
+@router.post("/register", response_model=User)
+async def register_user(user: UserCreate, db: Session = Depends(get_db)):
+    """用户注册"""
+    # 检查用户名是否已存在
+    existing_user = db.query(UserModel).filter(UserModel.username == user.username).first()
+    if existing_user:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already exists")
+
+    # 密码哈希
+    hashed_password = get_password_hash(user.password)
+    db_user = UserModel(
+        username=user.username,
+        email=user.email,
+        hashed_password=hashed_password,
+        role='user',
+        token=None,  # 初始token设置为None
+    )
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return User.model_validate(db_user)
