@@ -14,7 +14,7 @@ class Camera(Base):
     format = Column(String(255), nullable=True)  # 幅面，可为空
     weight = Column(Float, nullable=True)  # 重量，可为空
     mount = Column(String(255), nullable=True)  # 卡口，可为空
-    price = Column(Float, nullable=False)  # 价格，非空
+    price = Column(Float, nullable=True)  # 价格，非空
     pixel_resolution = Column(String(255), nullable=True)  # 像素，可为空
     release_date = Column(Date, nullable=True)  # 发布日期，可为空
     image_url = Column(String(255), nullable=True)  # 图片 URL，可为空

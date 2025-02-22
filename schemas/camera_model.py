@@ -10,7 +10,7 @@ class CameraBase(BaseModel):
     format: Optional[str] = None
     weight: Optional[float] = None
     mount: Optional[str] = None
-    price: float
+    price: Optional[float] = None
     pixel_resolution: Optional[str] = None
     release_date: Optional[date] = None
     image_url: Optional[str] = None
