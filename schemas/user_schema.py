@@ -15,6 +15,7 @@ class User(Base):
     token = Column(String(255), nullable=True)  # 令牌，可为空
     created_at = Column(DateTime(timezone=True), server_default=func.now())  # 创建时间，自动生成
     updated_at = Column(DateTime(timezone=True), onupdate=func.now(), server_default=func.now())  # 更新时间，自动更新
+    avatar = Column(String(255), nullable=True)  # 头像，可为空
 
     def __repr__(self):
         return f"<User(username='{self.username}', email='{self.email}', role='{self.role}')>"

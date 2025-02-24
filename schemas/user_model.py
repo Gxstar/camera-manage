@@ -7,6 +7,7 @@ class User(BaseModel):
     username: str
     email: EmailStr
     role: str
+    avatar: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -29,7 +30,7 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     password: Optional[str] = None  # 更新密码时使用
     role: Optional[str] = None
-
+    avatar: Optional[str] = None
     @field_validator('password')
     def validate_password(cls, value):
         if value is not None:
