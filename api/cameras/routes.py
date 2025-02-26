@@ -1,9 +1,9 @@
 # api/cameras/routes.py
 from fastapi import APIRouter, HTTPException, Depends, status
 from typing import List
-from schemas.camera_model import Camera, CameraCreate, CameraUpdate # 导入 Pydantic 模型
-from schemas.camera_schema import Camera as CameraSQL # 导入 SQLAlchemy 模型
-from schemas.user_model import TokenData
+from schemas.camera import Camera, CameraCreate, CameraUpdate # 导入 Pydantic 模型
+from schemas.camera import Camera as CameraSQL # 导入 SQLAlchemy 模型
+from schemas.user import TokenData
 from api.users.routes import get_current_user
 from sqlalchemy.orm import Session
 from models.database import get_db

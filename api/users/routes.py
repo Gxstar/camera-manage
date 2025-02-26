@@ -2,14 +2,14 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing import List
-from schemas.user_model import User, UserCreate, UserUpdate, TokenData  # 导入 Pydantic 模型
+from schemas.user import User, UserCreate, UserUpdate, TokenData  # 导入 Pydantic 模型
 import bcrypt
 from datetime import timedelta
 from utils.jwt_utils import create_access_token, decode_access_token, get_password_hash, verify_password  # 导入 JWT 相关函数
 from utils.config import settings
 from sqlalchemy.orm import Session
 from models.database import get_db
-from schemas.user_schema import User as UserModel  # 从 models 中导入 SQLAlchemy User 模型
+from schemas.user import User as UserModel  # 从 models 中导入 SQLAlchemy User 模型
 
 router = APIRouter()
 

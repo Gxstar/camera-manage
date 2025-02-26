@@ -1,9 +1,9 @@
 # api/lenses/routes.py
 from fastapi import APIRouter, HTTPException, Depends, status
 from typing import List
-from schemas.lens_model import Lens, LensCreate, LensUpdate  # 导入 Pydantic 模型
-from schemas.lens_schema import Lens as LensSQL  # 导入 SQLAlchemy 模型
-from schemas.user_model import TokenData
+from schemas.lens import Lens, LensCreate, LensUpdate  # 导入 Pydantic 模型
+from schemas.lens import Lens as LensSQL  # 导入 SQLAlchemy 模型
+from schemas.user import TokenData
 from api.users.routes import get_current_user
 from sqlalchemy.orm import Session
 from models.database import get_db

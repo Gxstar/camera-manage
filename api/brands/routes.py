@@ -1,9 +1,9 @@
 # api/brands/routes.py
 from fastapi import APIRouter, HTTPException, Depends, status
 from typing import List
-from schemas.brand_model import Brand, BrandCreate, BrandUpdate  # 导入 Pydantic 模型
-from schemas.brand_schema import Brand as BrandSQL  # 导入 SQLAlchemy 模型
-from schemas.user_model import TokenData
+from schemas.brand import Brand, BrandCreate, BrandUpdate  # 导入 Pydantic 模型
+from schemas.brand import Brand as BrandSQL  # 导入 SQLAlchemy 模型
+from schemas.user import TokenData
 from api.users.routes import get_current_user  # 确保路径正确
 from sqlalchemy.orm import Session
 from models.database import get_db
