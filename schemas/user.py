@@ -7,7 +7,7 @@ from datetime import datetime
 
 class UserBase(SQLModel):
     username: str
-    email: EmailStr
+    email: EmailStr="test@example.com"
     role: str = "user"
     avatar: Optional[str] = None
 
@@ -41,7 +41,7 @@ class UserUpdate(SQLModel):
 class User(UserBase, table=True):
     __tablename__ = "users"
     id: Optional[int] = Field(default=None, primary_key=True, index=True)
-    hashed_password: str
+    password: str
     token: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow, sa_column_kwargs={"onupdate": func.now()})
