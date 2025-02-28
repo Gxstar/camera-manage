@@ -31,7 +31,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         )
 
     # 验证密码
-    if not verify_password(password, user.hashed_password):
+    if not verify_password(password, user.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
@@ -45,7 +45,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         expires_delta=access_token_expires,
         secret_key=settings.SECRET_KEY,  # 传递 secret_key
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer","username":username,"role":user.role,"avatar":user.avatar}
 
 # 修改 get_current_user 函数
 async def get_current_user(token: str = Depends(OAuth2PasswordBearer(tokenUrl="/token")), db: Session = Depends(get_db)):
@@ -101,7 +101,7 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db_user = UserModel(  # 使用 UserModel
         username=user.username,
         email=user.email,
-        hashed_password=hashed_password,
+        password=hashed_password,
         role=user.role,
         token=None,  # 初始token设置为None
     )
@@ -119,7 +119,7 @@ async def update_user(user_id: int, user: UserUpdate, db: Session = Depends(get_
 
     # 更新字段
     if user.password:
-        db_user.hashed_password = get_password_hash(user.password)
+        db_user.password = get_password_hash(user.password)
     if user.username:
         db_user.username = user.username
     if user.email:
