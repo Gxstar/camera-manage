@@ -6,8 +6,8 @@ from api.brands import routes as brand_router
 from api.users import routes as user_router
 
 app = FastAPI(
-    title="Camera Lens Catalog API",
-    description="An API for managing camera and lens information.",
+    title="摄影数据库API",
+    description="管理摄影数据库的API，包括用户、品牌、镜头和相机",
     version="0.1.0",
 )
 
