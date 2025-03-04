@@ -9,17 +9,17 @@ class UserBase(SQLModel):
     username: str
     email: EmailStr="test@example.com"
     role: str = "user"
-    avatar: Optional[str] = None
+    avatar: Optional[str] = "https://pic1.imgdb.cn/item/51251/生成网站头像.png"
 
 class UserCreate(UserBase):
     password: str
 
     @classmethod
     def validate_password(cls, value):
-        # 密码强度规则：至少 8 个字符，包含至少一个大写字母、一个小写字母和一个数字
-        pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$'
+        # 密码强度规则：至少 6 个字符，包含字母和数字
+        pattern = r'^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,}$'
         if not re.match(pattern, value):
-            raise ValueError('密码必须至少 8 个字符长，并且包含至少一个大写字母、一个小写字母和一个数字。')
+            raise ValueError('密码必须至少 6 个字符长，并且包含字母和数字。')
         return value
 
 class UserUpdate(SQLModel):

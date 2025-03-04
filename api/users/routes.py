@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing import List
 from schemas.user import User, UserCreate, UserUpdate, TokenData  # 导入 Pydantic 模型
-import bcrypt
+# import bcrypt
 from datetime import timedelta
 from utils.jwt_utils import create_access_token, decode_access_token, get_password_hash, verify_password  # 导入 JWT 相关函数
 from utils.config import settings
@@ -104,6 +104,7 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
         password=hashed_password,
         role=user.role,
         token=None,  # 初始token设置为None
+        avatar=user.avatar,
     )
     db.add(db_user)
     db.commit()
@@ -126,6 +127,8 @@ async def update_user(user_id: int, user: UserUpdate, db: Session = Depends(get_
         db_user.email = user.email
     if user.role:
         db_user.role = user.role
+    if user.avatar:
+        db_user.avatar = user.avatar
 
     db.commit()
     db.refresh(db_user)
@@ -157,8 +160,10 @@ async def register_user(user: UserCreate, db: Session = Depends(get_db)):
         username=user.username,
         email=user.email,
         password=hashed_password,
-        role=user.role,
+        # role=user.role,
+        role="user",
         token=None,  # 初始token设置为None
+        avatar=user.avatar,
     )
     db.add(db_user)
     db.commit()
