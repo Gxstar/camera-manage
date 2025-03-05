@@ -26,7 +26,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="错误的用户名或者密码",
+            detail="用户名不存在",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
@@ -34,7 +34,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     if not verify_password(password, user.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="错误的用户名或者密码",
+            detail="错误的密码",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
@@ -54,7 +54,7 @@ async def get_current_user(token: str = Depends(OAuth2PasswordBearer(tokenUrl="/
     if payload is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authentication credentials",
+            detail="无效的身份验证凭据",
             headers={"WWW-Authenticate": "Bearer"},
         )
     username: str = payload.get("sub")
@@ -62,7 +62,7 @@ async def get_current_user(token: str = Depends(OAuth2PasswordBearer(tokenUrl="/
     if username is None or role is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authentication credentials",
+            detail="无效的身份验证凭据",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
@@ -75,7 +75,7 @@ async def check_admin_role(current_user: TokenData = Depends(get_current_user)):
     if current_user.role != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Insufficient privileges",
+            detail="权限不足",
         )
     return True
 
@@ -90,7 +90,7 @@ async def get_user(user_id: int, db: Session = Depends(get_db)):
     """获取单个用户"""
     user = db.query(UserModel).filter(UserModel.id == user_id).first()
     if user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="未找到用户")
     return User.model_validate(user)  # 将 SQLAlchemy 模型转换为 Pydantic 模型
 
 @router.post("/", response_model=User, dependencies=[Depends(check_admin_role)])
@@ -116,7 +116,7 @@ async def update_user(user_id: int, user: UserUpdate, db: Session = Depends(get_
     """更新用户 (仅管理员)"""
     db_user = db.query(UserModel).filter(UserModel.id == user_id).first()
     if db_user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="未找到用户")
 
     # 更新字段
     if user.password:
@@ -139,11 +139,11 @@ async def delete_user(user_id: int, db: Session = Depends(get_db)):
     """删除用户 (仅管理员)"""
     db_user = db.query(UserModel).filter(UserModel.id == user_id).first()
     if db_user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="未找到用户")
 
     db.delete(db_user)
     db.commit()
-    return {"message": "User deleted successfully"}
+    return {"message": "用户删除成功"}
 
 # 新增注册 API
 @router.post("/register", response_model=User)
@@ -152,7 +152,7 @@ async def register_user(user: UserCreate, db: Session = Depends(get_db)):
     # 检查用户名是否已存在
     existing_user = db.query(UserModel).filter(UserModel.username == user.username).first()
     if existing_user:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already exists")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="用户名已经存在")
 
     # 密码哈希
     hashed_password = get_password_hash(user.password)
