@@ -10,9 +10,9 @@ class LensBase(SQLModel):
     mount: Optional[str] = None
     min_focal_length: Optional[float] = None
     max_focal_length: Optional[float] = None
-    max_aperture: float
-    min_aperture: float
-    price: float
+    max_aperture: Optional[float] = None
+    min_aperture: Optional[float] = None
+    price: Optional[float] = None
     release_date: Optional[date] = None
     image_url: Optional[str] = None
 
@@ -35,9 +35,12 @@ class Lens(LensBase, table=True):
     __tablename__ = "lenses"
     id: Optional[int] = Field(default=None, primary_key=True, index=True)
     # 使用 Column 来定义 created_at 和 updated_at 字段
-    created_at: Optional[datetime] = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at: Optional[datetime] = Column(DateTime(timezone=True), onupdate=func.now(), server_default=func.now())
-
+    created_at: Optional[datetime] = Field(
+        sa_column=Column("created_at", DateTime(timezone=True), server_default=func.now())
+    )
+    updated_at: Optional[datetime] = Field(
+        sa_column=Column("updated_at", DateTime(timezone=True), onupdate=func.now(), server_default=func.now())
+    )
     # 使用字符串引用 Brand 模型
     # brand: "Brand" = Relationship(back_populates="lenses")
 
